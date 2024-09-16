@@ -1,28 +1,25 @@
 import React from 'react';
-import { FiStar, FiClock, FiAward } from 'react-icons/fi';
+import { FiStar, FiClock } from 'react-icons/fi';
 
 interface EventCardProps {
   id: string;
   title: string;
-  description: string;
+  shortDescription: string;
   date: string;
+  price: number;
   rating: number;
   imageUrl: string;
-  isMeetBookingChoice: boolean;
-  category: string;
   onDetailsClick?: (id: string) => void;
-  city: string;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
   id,
   title,
-  description,
+  shortDescription,
   date,
+  price,
   rating,
   imageUrl,
-  isMeetBookingChoice,
-  category,
   onDetailsClick
 }) => {
   const handleDetailsClick = () => {
@@ -32,30 +29,29 @@ const EventCard: React.FC<EventCardProps> = ({
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-md overflow-hidden mb-4 ${getCategoryStyle(category)}`}>
+    <div className="bg-white rounded-lg shadow-md overflow-hidden mb-4">
       <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${imageUrl})` }}>
-        <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start bg-gradient-to-b from-black/50 to-transparent">
-          <span className="flex items-center text-white bg-black/30 rounded px-2 py-1">
-            <FiStar className="w-4 h-4 mr-1" />
-            <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
-          </span>
-          <span className="flex items-center text-white bg-black/30 rounded px-2 py-1">
+        <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start">
+          <div className="flex space-x-2">
+            <span className="flex items-center bg-blue-500 text-white rounded-full px-3 py-1 text-sm font-semibold">
+              ${price.toFixed(0)}
+            </span>
+            <span className="flex items-center bg-white text-yellow-500 rounded-full px-3 py-1 text-sm font-semibold">
+              <FiStar className="w-4 h-4 mr-1" />
+              {rating.toFixed(1)}
+            </span>
+          </div>
+          <span className="flex items-center bg-white text-gray-700 rounded-full px-3 py-1 text-sm font-semibold">
             <FiClock className="w-4 h-4 mr-1" />
-            <span className="text-sm">{date}</span>
+            {date}
           </span>
         </div>
-        {isMeetBookingChoice && (
-          <span className="absolute bottom-2 right-2 flex items-center bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full">
-            <FiAward className="w-3 h-3 mr-1" />
-            Выбор MeetBooking
-          </span>
-        )}
       </div>
       <div className="p-4">
         <h3 className="font-bold text-lg mb-1">{title}</h3>
-        <p className="text-gray-600 text-sm mb-3">{description}</p>
-        <button 
-          className="w-full bg-blue-500 text-white rounded-md py-2 font-medium"
+        <p className="text-gray-600 text-sm mb-3">{shortDescription}</p>
+        <button
+          className="w-full bg-blue-500 text-white rounded-md py-2 font-medium hover:bg-blue-600 transition duration-300"
           onClick={handleDetailsClick}
         >
           Подробнее
@@ -64,22 +60,5 @@ const EventCard: React.FC<EventCardProps> = ({
     </div>
   );
 }
-
-
-
-const getCategoryStyle = (category: string) => {
-  switch (category.toLowerCase()) {
-    case 'детям':
-      return 'border-l-4 border-green-500';
-    case 'концерты':
-      return 'border-l-4 border-purple-500';
-    case 'стендап':
-      return 'border-l-4 border-yellow-500';
-    case 'выставки':
-      return 'border-l-4 border-red-500';
-    default:
-      return '';
-  }
-};
 
 export default EventCard;
