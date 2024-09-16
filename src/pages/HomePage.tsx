@@ -15,6 +15,11 @@ const categories = [
 
 const cities = ['Москва', 'Ташкент', 'Самарканд', 'Алматы', 'Астана'];
 
+interface Event {
+  id: string;
+  // Add other properties of the event here
+}
+
 const HomePage: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = useState('Все');
     const [selectedCity, setSelectedCity] = useState(() => {
@@ -22,7 +27,7 @@ const HomePage: React.FC = () => {
         return savedCity || 'Москва';
     });
     const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
-    const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -119,7 +124,7 @@ const HomePage: React.FC = () => {
                         <EventCard 
                             key={event.id} 
                             {...event} 
-                            onDetailsClick={handleEventDetailsClick}
+                            onDetailsClick={() => handleEventDetailsClick(event.id)}
                         />
                     ))
                 )}

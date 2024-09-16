@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiChevronRight, FiCheckCircle, FiTrash2 } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { FiCheckCircle, FiTrash2 } from 'react-icons/fi';
 import BottomNavigation from '../components/BottomNavigation';
 import { fetchNotifications, markNotificationAsRead, deleteNotification } from '../api/api';
 
@@ -16,7 +15,6 @@ interface Notification {
 const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     loadNotifications();
