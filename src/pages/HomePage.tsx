@@ -13,11 +13,19 @@ const categories = [
   { name: 'Выставки', Icon: FiImage },
 ];
 
+
+
 const cities = ['Москва', 'Ташкент', 'Самарканд', 'Алматы', 'Астана'];
 
 interface Event {
   id: string;
-  // Add other properties of the event here
+  title: string;
+  shortDescription: string;
+  date: string;
+  price: number;
+  image: string;
+  location: string;
+  // Добавьте другие свойства, если они есть
 }
 
 const HomePage: React.FC = () => {
@@ -120,12 +128,18 @@ const HomePage: React.FC = () => {
                 {loading ? (
                     <p>Загрузка мероприятий...</p>
                 ) : (
-                    events.map(event => (
-                        <EventCard 
-                            key={event.id} 
-                            {...event} 
-                            onDetailsClick={() => handleEventDetailsClick(event.id)}
-                        />
+                  events.map((event: Event) => (
+                    <EventCard 
+                        key={event.id}
+                        id={event.id}
+                        title={event.title}
+                        shortDescription={event.shortDescription}
+                        date={event.date}
+                        price={event.price}
+                        image={event.image}
+                        location={event.location}
+                        onDetailsClick={() => handleEventDetailsClick(event.id)}
+                    />
                     ))
                 )}
             </div>
