@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://da39-202-79-184-241.ngrok-free.app/api'; // Замените на ваш URL
+const API_BASE_URL = 'http://localhost:3000/api'; // Замените на ваш URL
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -8,27 +8,9 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-api.interceptors.request.use((config) => {
-  const telegramUserId = localStorage.getItem('telegramUserId');
-  console.log('Sending request with Telegram User ID:', telegramUserId);
-  if (telegramUserId) {
-    config.headers['X-Telegram-User-Id'] = telegramUserId;
-  }
-  return config;
-});
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('API Error:', error.response?.data || error.message);
-    return Promise.reject(error);
-  }
-);
-
 export const setTelegramUserId = (userId: string) => {
-  localStorage.setItem('telegramUserId', userId);
-};
+    localStorage.setItem('telegramUserId', userId);
+  };
 
 export const getEvents = (params: any) => api.get('/events', { params });
 export const getEvent = (id: string) => api.get(`/events/${id}`);
@@ -37,3 +19,7 @@ export const getNotification = (id: string) => api.get(`/notifications/${id}`);
 export const markNotificationAsRead = (id: string) => api.put(`/notifications/${id}/read`);
 
 export default api;
+
+
+
+
