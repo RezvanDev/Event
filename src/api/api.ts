@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://4590-202-79-184-241.ngrok-free.app'; // Замените на URL вашего бэкенда
+const API_BASE_URL = 'https://2266-202-79-184-241.ngrok-free.app'; // Замените на URL вашего бэкенда
 
 const api = axios.create({
   baseURL: API_BASE_URL,
