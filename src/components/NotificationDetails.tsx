@@ -6,9 +6,10 @@ import { fetchNotificationDetails } from '../api/api';
 interface Notification {
   id: string;
   title: string;
-  message: string;
+  description: string;
   type: string;
-  createdAt: string;
+  date: string;
+  isRead: boolean;
 }
 
 const NotificationDetails: React.FC = () => {
@@ -16,6 +17,7 @@ const NotificationDetails: React.FC = () => {
   const navigate = useNavigate();
   const [notification, setNotification] = useState<Notification | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadNotificationDetails = async () => {
@@ -25,8 +27,10 @@ const NotificationDetails: React.FC = () => {
           setNotification(data);
         } catch (error) {
           console.error('Error fetching notification details:', error);
+          setError('Failed to load notification details. Please try again later.');
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
       }
     };
 
@@ -35,6 +39,10 @@ const NotificationDetails: React.FC = () => {
 
   if (loading) {
     return <div>Загрузка...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
   }
 
   if (!notification) {
@@ -50,9 +58,9 @@ const NotificationDetails: React.FC = () => {
       </div>
       <div className="p-4">
         <h2 className="text-2xl font-bold mb-4">{notification.title}</h2>
-        <p className="text-gray-600 mb-2">{notification.createdAt}</p>
+        <p className="text-gray-600 mb-2">{notification.date}</p>
         <p className="text-gray-600 mb-4">Тип: {notification.type}</p>
-        <p className="text-gray-700">{notification.message}</p>
+        <p className="text-gray-700">{notification.description}</p>
       </div>
     </div>
   );
