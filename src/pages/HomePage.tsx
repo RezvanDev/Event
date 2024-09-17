@@ -120,11 +120,11 @@ const HomePage: React.FC = () => {
                 {loading ? (
                     <p>Загрузка мероприятий...</p>
                 ) : (
-                    events.map(event => (
+                    events.map((event: any) => ( // Добавляем явную типизацию
                         <EventCard 
                             key={event.id} 
                             {...event} 
-                            onDetailsClick={() => handleEventDetailsClick(event.id)}
+                            onDetailsClick={handleEventDetailsClick}
                         />
                     ))
                 )}
