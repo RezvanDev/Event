@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api/api';
 
 declare global {
   interface Window {
     Telegram?: {
       WebApp?: {
-        initData: string;
+        initDataUnsafe: {
+          user?: {
+            id: number;
+            first_name: string;
+            last_name?: string;
+            username?: string;
+          };
+        };
         ready: () => void;
       };
     };
@@ -13,44 +19,29 @@ declare global {
 }
 
 const TelegramAuth: React.FC = () => {
-  const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
-    const initTelegram = async () => {
-      if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        const initData = tg.initData;
-        if (!initData) {
-          setError("No init data available");
-          return;
-        }
-        try {
-          const response = await api.post('/auth/telegram-login', { initData });
-          console.log('User registered/logged in:', response.data);
-          localStorage.setItem('token', response.data.access_token);
-        } catch (error) {
-          console.error('Registration/Login failed:', error);
-          setError("Failed to register/login");
-        }
-      } else {
-        console.log("Running outside Telegram WebApp");
-        // Для тестирования вне Telegram WebApp
-        if (process.env.NODE_ENV === 'development') {
-          const dummyToken = 'dummy-token-for-testing';
-          localStorage.setItem('token', dummyToken);
-          console.log('Test token set:', dummyToken);
-        } else {
-          setError("This app is designed to work within Telegram Web App");
-        }
+    if (window.Telegram && window.Telegram.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      const user = tg.initDataUnsafe.user;
+      if (user) {
+        setUserId(user.id);
+        localStorage.setItem('telegramUserId', user.id.toString());
+        console.log('Telegram user authenticated:', user);
       }
-    };
-
-    initTelegram();
+    } else {
+      console.log("Running outside Telegram WebApp");
+      // Для тестирования вне Telegram WebApp
+      const testUserId = 12345;
+      setUserId(testUserId);
+      localStorage.setItem('telegramUserId', testUserId.toString());
+    }
   }, []);
 
-  if (error) {
-    return <div className="error-message">{error}</div>;
+  if (!userId) {
+    return <div>Loading...</div>;
   }
 
   return null;
