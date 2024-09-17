@@ -29,6 +29,7 @@ const App: React.FC = () => {
       console.log('Telegram User ID set:', telegramUserId);
     } else {
       console.warn('Telegram User ID not found');
+      // Здесь можно добавить логику для перенаправления пользователя на страницу с инструкциями
     }
   }, []);
 
