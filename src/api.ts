@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api'; // Замените на ваш URL
+const API_BASE_URL = 'https://da39-202-79-184-241.ngrok-free.app/api'; // Замените на ваш URL
 
 const api = axios.create({
   baseURL: API_BASE_URL,
