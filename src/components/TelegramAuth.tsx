@@ -13,13 +13,11 @@ declare global {
 }
 
 const TelegramAuth: React.FC = () => {
-  const [isWebApp, setIsWebApp] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const initTelegram = async () => {
       if (window.Telegram && window.Telegram.WebApp) {
-        setIsWebApp(true);
         const tg = window.Telegram.WebApp;
         tg.ready();
 
@@ -30,7 +28,9 @@ const TelegramAuth: React.FC = () => {
         }
 
         try {
-          const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/telegram-login`, { initData }, {
+          const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/telegram-login`, {
+            initData: initData
+          }, {
             withCredentials: true
           });
           console.log('User registered/logged in:', response.data);
@@ -49,10 +49,6 @@ const TelegramAuth: React.FC = () => {
 
   if (error) {
     return <div>{error}</div>;
-  }
-
-  if (!isWebApp) {
-    return <div>Loading...</div>;
   }
 
   return null;
