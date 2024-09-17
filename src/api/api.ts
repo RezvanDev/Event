@@ -2,9 +2,18 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://2266-202-79-184-241.ngrok-free.app'; // Замените на URL вашего бэкенда
 
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export const fetchEvents = async (category?: string, city?: string) => {
@@ -15,11 +24,7 @@ export const fetchEvents = async (category?: string, city?: string) => {
   if (city) {
     params.city = city;
   }
-  
-  const response = await api.get('/events', { 
-    params,
-    paramsSerializer: params => new URLSearchParams(params).toString()
-  });
+  const response = await api.get('/events', { params });
   return response.data;
 };
 
@@ -29,23 +34,23 @@ export const fetchEventDetails = async (id: string) => {
 };
 
 export const fetchNotifications = async () => {
-    const response = await api.get('/notifications');
-    return response.data;
-  };
-  
+  const response = await api.get('/notifications');
+  return response.data;
+};
+
 export const fetchNotificationDetails = async (id: string) => {
-    const response = await api.get(`/notifications/${id}`);
-    return response.data;
-  };
-  
+  const response = await api.get(`/notifications/${id}`);
+  return response.data;
+};
+
 export const markNotificationAsRead = async (id: number) => {
-    const response = await api.put(`/notifications/${id}/read`);
-    return response.data;
-  };
-  
+  const response = await api.put(`/notifications/${id}/read`);
+  return response.data;
+};
+
 export const deleteNotification = async (id: number) => {
-    const response = await api.delete(`/notifications/${id}`);
-    return response.data;
-  };
+  const response = await api.delete(`/notifications/${id}`);
+  return response.data;
+};
 
 export default api;
