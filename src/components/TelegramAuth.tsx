@@ -34,15 +34,14 @@ const TelegramAuth: React.FC = () => {
           setError("Failed to register/login");
         }
       } else {
-        // For testing outside of Telegram WebApp
         console.log("Running outside Telegram WebApp");
-        try {
-          // You might want to implement a different login mechanism here
-          // For now, we'll just set a dummy token
-          localStorage.setItem('token', 'dummy-token-for-testing');
-        } catch (error) {
-          console.error('Test login failed:', error);
-          setError("Failed to set test token");
+        // Для тестирования вне Telegram WebApp
+        if (process.env.NODE_ENV === 'development') {
+          const dummyToken = 'dummy-token-for-testing';
+          localStorage.setItem('token', dummyToken);
+          console.log('Test token set:', dummyToken);
+        } else {
+          setError("This app is designed to work within Telegram Web App");
         }
       }
     };
@@ -51,7 +50,7 @@ const TelegramAuth: React.FC = () => {
   }, []);
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="error-message">{error}</div>;
   }
 
   return null;
