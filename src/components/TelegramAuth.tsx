@@ -3,42 +3,56 @@ import axios from 'axios';
 
 declare global {
   interface Window {
-    Telegram?: any;
+    Telegram?: {
+      WebApp?: {
+        initData: string;
+        ready: () => void;
+      };
+    };
   }
 }
 
 const TelegramAuth: React.FC = () => {
   const [isWebApp, setIsWebApp] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (window.Telegram && window.Telegram.WebApp) {
-      setIsWebApp(true);
-      const tg = window.Telegram.WebApp;
-      tg.ready();
+    const initTelegram = async () => {
+      if (window.Telegram && window.Telegram.WebApp) {
+        setIsWebApp(true);
+        const tg = window.Telegram.WebApp;
+        tg.ready();
 
-      const registerUser = async () => {
-        const user = tg.initDataUnsafe.user;
-        if (user) {
-          try {
-            const response = await axios.post('/api/auth/register', {
-              telegramId: user.id.toString(),
-              name: user.first_name + (user.last_name ? ' ' + user.last_name : '')
-            });
-            console.log('User registered:', response.data);
-          } catch (error) {
-            console.error('Registration failed:', error);
-          }
+        const initData = tg.initData;
+        if (!initData) {
+          setError("No init data available");
+          return;
         }
-      };
 
-      registerUser();
-    } else {
-      console.log("This is not a Telegram Web App");
-    }
+        try {
+          const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/telegram-login`, { initData }, {
+            withCredentials: true
+          });
+          console.log('User registered/logged in:', response.data);
+          localStorage.setItem('token', response.data.access_token);
+        } catch (error) {
+          console.error('Registration/Login failed:', error);
+          setError("Failed to register/login");
+        }
+      } else {
+        setError("This app is designed to work within Telegram Web App");
+      }
+    };
+
+    initTelegram();
   }, []);
 
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   if (!isWebApp) {
-    return <div>This app is designed to work within Telegram Web App.</div>;
+    return <div>Loading...</div>;
   }
 
   return null;
