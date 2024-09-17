@@ -1,5 +1,6 @@
+// src/components/TelegramAuth.tsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 
 declare global {
   interface Window {
@@ -20,19 +21,13 @@ const TelegramAuth: React.FC = () => {
       if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
         tg.ready();
-
         const initData = tg.initData;
         if (!initData) {
           setError("No init data available");
           return;
         }
-
         try {
-          const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/telegram-login`, {
-            initData: initData
-          }, {
-            withCredentials: true
-          });
+          const response = await api.post('/auth/telegram-login', { initData });
           console.log('User registered/logged in:', response.data);
           localStorage.setItem('token', response.data.access_token);
         } catch (error) {

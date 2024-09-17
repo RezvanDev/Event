@@ -1,7 +1,7 @@
+// src/api/api.ts
 import axios from 'axios';
 
-const API_BASE_URL = 'https://2266-202-79-184-241.ngrok-free.app'; // Замените на URL вашего бэкенда
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -24,32 +24,32 @@ export const fetchEvents = async (category?: string, city?: string) => {
   if (city) {
     params.city = city;
   }
-  const response = await api.get('/events', { params });
+  const response = await api.get('/api/events', { params });
   return response.data;
 };
 
 export const fetchEventDetails = async (id: string) => {
-  const response = await api.get(`/events/${id}`);
+  const response = await api.get(`/api/events/${id}`);
   return response.data;
 };
 
 export const fetchNotifications = async () => {
-  const response = await api.get('/notifications');
+  const response = await api.get('/api/notifications');
   return response.data;
 };
 
 export const fetchNotificationDetails = async (id: string) => {
-  const response = await api.get(`/notifications/${id}`);
+  const response = await api.get(`/api/notifications/${id}`);
   return response.data;
 };
 
 export const markNotificationAsRead = async (id: number) => {
-  const response = await api.put(`/notifications/${id}/read`);
+  const response = await api.put(`/api/notifications/${id}/read`);
   return response.data;
 };
 
 export const deleteNotification = async (id: number) => {
-  const response = await api.delete(`/notifications/${id}`);
+  const response = await api.delete(`/api/notifications/${id}`);
   return response.data;
 };
 
