@@ -33,6 +33,7 @@ const HomePage: React.FC = () => {
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
@@ -42,6 +43,7 @@ const HomePage: React.FC = () => {
 
   const fetchEvents = async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await getEvents({
         category: selectedCategory !== 'Все' ? selectedCategory : undefined,
@@ -50,6 +52,7 @@ const HomePage: React.FC = () => {
       setEvents(response.data.events);
     } catch (error) {
       console.error('Error fetching events:', error);
+      setError('Не удалось загрузить мероприятия. Пожалуйста, попробуйте позже.');
     } finally {
       setLoading(false);
     }
@@ -129,6 +132,8 @@ const HomePage: React.FC = () => {
         </div>
         {loading ? (
           <p>Загрузка мероприятий...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
         ) : filteredEvents.length === 0 ? (
           <p>Мероприятия не найдены</p>
         ) : (
