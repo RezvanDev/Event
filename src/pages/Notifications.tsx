@@ -17,17 +17,22 @@ const Notifications: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NotificationType>('Акции');
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadNotifications = async () => {
       try {
+        setLoading(true);
         const data = await fetchNotifications();
         setNotifications(data);
+        setError(null);
       } catch (error) {
         console.error('Error fetching notifications:', error);
+        setError('Failed to load notifications. Please try again later.');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     loadNotifications();
@@ -47,6 +52,10 @@ const Notifications: React.FC = () => {
 
   if (loading) {
     return <div>Загрузка уведомлений...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
   }
 
   return (

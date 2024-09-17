@@ -17,7 +17,14 @@ const cities = ['Москва', 'Ташкент', 'Самарканд', 'Алм�
 
 interface Event {
   id: string;
-  // Add other properties of the event here
+  title: string;
+  shortDescription: string;
+  date: string;
+  price: number;
+  rating: number;
+  imageUrl: string;
+  category: string;
+  city: string;
 }
 
 const HomePage: React.FC = () => {
@@ -32,7 +39,6 @@ const HomePage: React.FC = () => {
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
     
-
     useEffect(() => {
         const loadEvents = async () => {
             setLoading(true);
@@ -126,7 +132,7 @@ const HomePage: React.FC = () => {
                 ) : error ? (
                     <p className="text-red-500">{error}</p>
                 ) : (
-                    events.map((event: any) => (
+                    events.map((event: Event) => (
                         <EventCard 
                             key={event.id} 
                             {...event} 
