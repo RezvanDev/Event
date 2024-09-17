@@ -52,8 +52,9 @@ const HomePage: React.FC = () => {
             } catch (error) {
                 console.error('Error fetching events:', error);
                 setError('Failed to load events. Please try again later.');
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         loadEvents();
@@ -130,7 +131,15 @@ const HomePage: React.FC = () => {
                 {loading ? (
                     <p>Загрузка мероприятий...</p>
                 ) : error ? (
-                    <p className="text-red-500">{error}</p>
+                    <div className="text-red-500 p-4 bg-red-100 rounded-md">
+                        <p>{error}</p>
+                        <button 
+                            className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
+                            onClick={() => window.location.reload()}
+                        >
+                            Попробовать снова
+                        </button>
+                    </div>
                 ) : (
                     events.map((event: Event) => (
                         <EventCard 

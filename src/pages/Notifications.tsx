@@ -7,10 +7,11 @@ type NotificationType = 'Акции' | 'Статус бронирования' |
 
 interface Notification {
   id: string;
-  type: NotificationType;
   title: string;
   description: string;
+  type: NotificationType;
   date: string;
+  isRead: boolean;
 }
 
 const Notifications: React.FC = () => {
@@ -55,7 +56,17 @@ const Notifications: React.FC = () => {
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return (
+      <div className="text-red-500 p-4 bg-red-100 rounded-md">
+        <p>{error}</p>
+        <button 
+          className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
+          onClick={() => window.location.reload()}
+        >
+          Попробовать снова
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -84,7 +95,9 @@ const Notifications: React.FC = () => {
             {notifications.map((notification) => (
               <div
                 key={notification.id}
-                className="bg-white rounded-lg p-4 mb-2 shadow-sm cursor-pointer"
+                className={`bg-white rounded-lg p-4 mb-2 shadow-sm cursor-pointer ${
+                  notification.isRead ? 'opacity-50' : ''
+                }`}
                 onClick={() => navigate(`/notifications/${notification.id}`)}
               >
                 <div className="flex justify-between items-center">
