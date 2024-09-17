@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import EventDetailsPage from './pages/EventDetailsPage';
@@ -6,32 +6,32 @@ import Notifications from './pages/Notifications';
 import NotificationDetails from './components/NotificationDetails';
 import { setTelegramUserId } from './api';
 
-declare global {
-  interface Window {
-    Telegram?: {
-      WebApp?: {
-        initData: string;
-        initDataUnsafe: {
-          user?: {
-            id: number;
-          };
-        };
-      };
-    };
-  }
-}
-
 const App: React.FC = () => {
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    const telegramUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
-    if (telegramUserId) {
-      setTelegramUserId(telegramUserId.toString());
-      console.log('Telegram User ID set:', telegramUserId);
-    } else {
-      console.warn('Telegram User ID not found');
-      // Здесь можно добавить логику для перенаправления пользователя на страницу с инструкциями
-    }
+    const initApp = () => {
+      try {
+        const telegramUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+        if (telegramUserId) {
+          setTelegramUserId(telegramUserId.toString());
+          console.log('Telegram User ID set:', telegramUserId);
+        } else {
+          console.warn('Telegram User ID not found');
+          setError('Не удалось получить ID пользователя Telegram');
+        }
+      } catch (err) {
+        console.error('Error initializing app:', err);
+        setError('Произошла ошибка при инициализации приложения');
+      }
+    };
+
+    initApp();
   }, []);
+
+  if (error) {
+    return <div className="p-4 text-red-500">{error}</div>;
+  }
 
   return (
     <Router>
