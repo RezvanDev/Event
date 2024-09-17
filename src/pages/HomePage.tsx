@@ -30,10 +30,13 @@ const HomePage: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [error, setError] = useState<string | null>(null);
+    
 
     useEffect(() => {
         const loadEvents = async () => {
             setLoading(true);
+            setError(null);
             try {
                 const data = await fetchEvents(
                     selectedCategory !== 'Все' ? selectedCategory : undefined,
@@ -42,6 +45,7 @@ const HomePage: React.FC = () => {
                 setEvents(data);
             } catch (error) {
                 console.error('Error fetching events:', error);
+                setError('Failed to load events. Please try again later.');
             }
             setLoading(false);
         };
@@ -119,8 +123,10 @@ const HomePage: React.FC = () => {
                 </div>
                 {loading ? (
                     <p>Загрузка мероприятий...</p>
+                ) : error ? (
+                    <p className="text-red-500">{error}</p>
                 ) : (
-                    events.map((event: any) => ( // Добавляем явную типизацию
+                    events.map((event: any) => (
                         <EventCard 
                             key={event.id} 
                             {...event} 

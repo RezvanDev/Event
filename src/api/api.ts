@@ -1,5 +1,4 @@
-// src/api/api.ts
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,16 +15,29 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    console.error('API Error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
+
 export const fetchEvents = async (category?: string, city?: string) => {
-  const params: any = {};
-  if (category && category !== 'Все') {
-    params.category = category;
+  try {
+    const params: any = {};
+    if (category && category !== 'Все') {
+      params.category = category;
+    }
+    if (city) {
+      params.city = city;
+    }
+    const response = await api.get('/api/events', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    throw error;
   }
-  if (city) {
-    params.city = city;
-  }
-  const response = await api.get('/api/events', { params });
-  return response.data;
 };
 
 export const fetchEventDetails = async (id: string) => {

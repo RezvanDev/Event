@@ -1,4 +1,3 @@
-// src/components/TelegramAuth.tsx
 import React, { useEffect, useState } from 'react';
 import api from '../api/api';
 
@@ -35,7 +34,16 @@ const TelegramAuth: React.FC = () => {
           setError("Failed to register/login");
         }
       } else {
-        setError("This app is designed to work within Telegram Web App");
+        // For testing outside of Telegram WebApp
+        console.log("Running outside Telegram WebApp");
+        try {
+          // You might want to implement a different login mechanism here
+          // For now, we'll just set a dummy token
+          localStorage.setItem('token', 'dummy-token-for-testing');
+        } catch (error) {
+          console.error('Test login failed:', error);
+          setError("Failed to set test token");
+        }
       }
     };
 
