@@ -1,7 +1,6 @@
-// src/api.ts
 import axios from 'axios';
 
-const API_BASE_URL = 'https://da39-202-79-184-241.ngrok-free.app/api'; // Замените на URL вашего бэкенда
+const API_BASE_URL = 'https://da39-202-79-184-241.ngrok-free.app/api'; // Замените на ваш URL
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -10,14 +9,22 @@ const api = axios.create({
   },
 });
 
-// Интерцептор для добавления Telegram User ID в заголовки
 api.interceptors.request.use((config) => {
   const telegramUserId = localStorage.getItem('telegramUserId');
+  console.log('Sending request with Telegram User ID:', telegramUserId);
   if (telegramUserId) {
     config.headers['X-Telegram-User-Id'] = telegramUserId;
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('API Error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
 
 export const setTelegramUserId = (userId: string) => {
   localStorage.setItem('telegramUserId', userId);
