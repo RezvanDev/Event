@@ -37,11 +37,17 @@ const HomePage: React.FC = () => {
       console.log('Fetching events...');
       const category = selectedCategory === 'Все' ? undefined : selectedCategory;
       console.log('Category:', category, 'City:', selectedCity);
-      const fetchedEvents = await api.getEvents(category, selectedCity);
-      console.log('Fetched events:', fetchedEvents);
-      setEvents(fetchedEvents);
+      const response = await api.getEvents(category, selectedCity);
+      console.log('API Response:', response);
+      if (Array.isArray(response)) {
+        setEvents(response);
+      } else {
+        console.error('Unexpected response format:', response);
+        setEvents([]);
+      }
     } catch (error) {
       console.error('Error fetching events:', error);
+      setEvents([]);
     }
   };
 

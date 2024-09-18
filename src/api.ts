@@ -18,11 +18,22 @@ export interface Event {
 
 export const api = {
   async getEvents(category?: string, city?: string): Promise<Event[]> {
-    const params = new URLSearchParams();
-    if (category) params.append('category', category);
-    if (city) params.append('city', city);
-    const response = await axios.get(`${API_URL}/events`, { params });
-    return response.data;
+    try {
+      const params = new URLSearchParams();
+      if (category) params.append('category', category);
+      if (city) params.append('city', city);
+      const response = await axios.get(`${API_URL}/events`, { params });
+      console.log('Raw API response:', response);
+      if (Array.isArray(response.data)) {
+        return response.data;
+      } else {
+        console.error('Unexpected API response format:', response.data);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error in getEvents:', error);
+      return [];
+    }
   },
 
   async getEvent(id: number): Promise<Event> {
