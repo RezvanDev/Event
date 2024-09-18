@@ -35,8 +35,12 @@ const HomePage: React.FC = () => {
 
   const fetchEvents = async () => {
     try {
+      console.log('Fetching events...');
       const category = selectedCategory === 'Все' ? undefined : selectedCategory;
+      console.log('Category:', category);
+      console.log('City:', selectedCity);
       const fetchedEvents = await api.getEvents(category, selectedCity);
+      console.log('Fetched events:', fetchedEvents);
       setEvents(Array.isArray(fetchedEvents) ? fetchedEvents : []);
     } catch (error) {
       console.error('Error fetching events:', error);
