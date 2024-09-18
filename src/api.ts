@@ -1,19 +1,19 @@
 import axios from 'axios';
 
-const API_URL = 'https://f6e1-95-214-210-188.ngrok-free.app'; // Adjust this to match your NestJS server URL
+const API_URL = 'http://localhost:3000'; // Adjust this to match your NestJS server URL
 
 export interface Event {
   id: number;
   title: string;
   description: string;
   date: string;
-  price: number;
   rating: number;
   imageUrl: string;
   isMeetBookingChoice: boolean;
   category: string;
   city: string;
-  address: string;  // Добавлено поле address
+  price: number;
+  address: string;
 }
 
 export const api = {
@@ -42,5 +42,13 @@ export const api = {
 
   async deleteEvent(id: number): Promise<void> {
     await axios.delete(`${API_URL}/events/${id}`);
+  },
+
+  sendDataToTelegram(data: any) {
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.sendData(JSON.stringify(data));
+    } else {
+      console.error('Telegram WebApp is not available');
+    }
   }
 };

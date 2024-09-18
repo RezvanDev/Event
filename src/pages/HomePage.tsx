@@ -3,7 +3,7 @@ import { FiGrid, FiUsers, FiMusic, FiMic, FiImage, FiSearch, FiChevronDown } fro
 import { useNavigate } from 'react-router-dom';
 import EventCard from '../components/EventCard';
 import BottomNavigation from '../components/BottomNavigation';
-import { api, Event } from '../services/api';
+import { api, Event } from '../api';
 
 const categories = [
   { name: 'Все', Icon: FiGrid },
@@ -25,6 +25,12 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     fetchEvents();
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.BackButton.show();
+      window.Telegram.WebApp.BackButton.onClick(() => {
+        window.Telegram.WebApp.close();
+      });
+    }
   }, [selectedCategory, selectedCity]);
 
   const fetchEvents = async () => {
@@ -37,7 +43,7 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleEventDetailsClick = (id: number) => {
+  const handleEventDetailsClick = (id: string) => {
     navigate(`/event/${id}`);
   };
 
@@ -111,9 +117,10 @@ const HomePage: React.FC = () => {
         </div>
         {filteredEvents.map(event => (
           <EventCard 
-            key={event.id} 
-            event={event}
-            onDetailsClick={() => handleEventDetailsClick(event.id)}
+            key={event.id}
+            {...event}
+            id={event.id.toString()} // Преобразуем number в string
+            onDetailsClick={handleEventDetailsClick}
           />
         ))}
       </div>

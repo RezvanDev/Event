@@ -1,17 +1,10 @@
 import React from 'react';
 import { FiStar, FiClock, FiAward } from 'react-icons/fi';
+import { Event } from '../api'; // Импортируем интерфейс Event из api.ts
 
-interface EventCardProps {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  rating: number;
-  imageUrl: string;
-  isMeetBookingChoice: boolean;
-  category: string;
+interface EventCardProps extends Omit<Event, 'id'> {
+  id: string; // Оставляем id как строку для EventCard
   onDetailsClick?: (id: string) => void;
-  city: string;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -54,7 +47,7 @@ const EventCard: React.FC<EventCardProps> = ({
       <div className="p-4">
         <h3 className="font-bold text-lg mb-1">{title}</h3>
         <p className="text-gray-600 text-sm mb-3">{description}</p>
-        <button 
+        <button
           className="w-full bg-blue-500 text-white rounded-md py-2 font-medium"
           onClick={handleDetailsClick}
         >
@@ -64,8 +57,6 @@ const EventCard: React.FC<EventCardProps> = ({
     </div>
   );
 }
-
-
 
 const getCategoryStyle = (category: string) => {
   switch (category.toLowerCase()) {

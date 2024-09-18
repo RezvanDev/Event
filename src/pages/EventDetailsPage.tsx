@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiMapPin, FiStar, FiClock } from 'react-icons/fi';
 import BottomNavigation from '../components/BottomNavigation';
-import { api, Event } from '../services/api';
+import { api, Event } from '../api';
 
 const EventDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,7 +13,16 @@ const EventDetailsPage: React.FC = () => {
     if (id) {
       fetchEvent(parseInt(id));
     }
-  }, [id]);
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.BackButton.show();
+      window.Telegram.WebApp.BackButton.onClick(() => navigate(-1));
+    }
+    return () => {
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.BackButton.hide();
+      }
+    };
+  }, [id, navigate]);
 
   const fetchEvent = async (eventId: number) => {
     try {
@@ -21,6 +30,17 @@ const EventDetailsPage: React.FC = () => {
       setEvent(fetchedEvent);
     } catch (error) {
       console.error('Error fetching event:', error);
+    }
+  };
+
+  const handleBooking = () => {
+    if (event) {
+      api.sendDataToTelegram({
+        action: 'book_event',
+        eventId: event.id,
+        title: event.title,
+        price: event.price,
+      });
     }
   };
 
@@ -71,7 +91,7 @@ const EventDetailsPage: React.FC = () => {
           <h2 className="text-2xl font-bold mb-2">Адрес мероприятия</h2>
           <div className="flex items-center mb-4">
             <FiMapPin className="text-blue-500 mr-2" />
-            <p>{event.address}</p>
+            <p>{event.address || 'Адрес не указан'}</p>
           </div>
           <div className="bg-gray-200 rounded-lg p-4 flex items-center justify-center" style={{ height: '200px' }}>
             <p className="text-gray-500">Виджет Яндекс карт</p>
@@ -79,7 +99,10 @@ const EventDetailsPage: React.FC = () => {
         </div>
       </div>
       <div className="fixed bottom-16 left-0 right-0 p-4 ">
-        <button className="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold text-lg">
+        <button 
+          className="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold text-lg"
+          onClick={handleBooking}
+        >
           Забронировать
         </button>
       </div>
