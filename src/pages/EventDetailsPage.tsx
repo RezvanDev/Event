@@ -71,7 +71,7 @@ const EventDetailsPage: React.FC = () => {
           <h2 className="text-2xl font-bold mb-2">Адрес мероприятия</h2>
           <div className="flex items-center mb-4">
             <FiMapPin className="text-blue-500 mr-2" />
-            <p>{event.address || 'Адрес не указан'}</p>
+            <p>{event.address}</p>
           </div>
           <div className="bg-gray-200 rounded-lg p-4 flex items-center justify-center" style={{ height: '200px' }}>
             <p className="text-gray-500">Виджет Яндекс карт</p>

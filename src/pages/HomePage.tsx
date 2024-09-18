@@ -112,7 +112,7 @@ const HomePage: React.FC = () => {
         {filteredEvents.map(event => (
           <EventCard 
             key={event.id} 
-            {...event} 
+            event={event}  // Передаем весь объект event
             onDetailsClick={() => handleEventDetailsClick(event.id)}
           />
         ))}
