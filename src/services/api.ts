@@ -7,11 +7,13 @@ export interface Event {
   title: string;
   description: string;
   date: string;
+  price: number;
   rating: number;
   imageUrl: string;
   isMeetBookingChoice: boolean;
   category: string;
   city: string;
+  address: string;  // Добавлено поле address
 }
 
 export const api = {
