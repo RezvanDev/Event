@@ -37,9 +37,10 @@ const HomePage: React.FC = () => {
     try {
       const category = selectedCategory === 'Все' ? undefined : selectedCategory;
       const fetchedEvents = await api.getEvents(category, selectedCity);
-      setEvents(fetchedEvents);
+      setEvents(Array.isArray(fetchedEvents) ? fetchedEvents : []);
     } catch (error) {
       console.error('Error fetching events:', error);
+      setEvents([]);
     }
   };
 
@@ -47,10 +48,10 @@ const HomePage: React.FC = () => {
     navigate(`/event/${id}`);
   };
 
-  const filteredEvents = events.filter(event =>
+  const filteredEvents = Array.isArray(events) ? events.filter(event =>
     event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     event.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   return (
     <div className="bg-gray-100 min-h-screen pb-16">
