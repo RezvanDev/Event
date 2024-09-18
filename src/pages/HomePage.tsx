@@ -3,7 +3,7 @@ import { FiGrid, FiUsers, FiMusic, FiMic, FiImage, FiSearch, FiChevronDown } fro
 import { useNavigate } from 'react-router-dom';
 import EventCard from '../components/EventCard';
 import BottomNavigation from '../components/BottomNavigation';
-import { getEvents } from '../api';
+import { api, Event } from '../services/api';
 
 const categories = [
   { name: 'Все', Icon: FiGrid },
@@ -15,25 +15,11 @@ const categories = [
 
 const cities = ['Москва', 'Ташкент', 'Самарканд', 'Алматы', 'Астана'];
 
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  rating: number;
-  imageUrl: string;
-  isMeetBookingChoice: boolean;
-  category: string;
-  city: string;
-}
-
 const HomePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('Все');
   const [selectedCity, setSelectedCity] = useState('Москва');
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
@@ -42,23 +28,16 @@ const HomePage: React.FC = () => {
   }, [selectedCategory, selectedCity]);
 
   const fetchEvents = async () => {
-    setLoading(true);
-    setError(null);
     try {
-      const response = await getEvents({
-        category: selectedCategory !== 'Все' ? selectedCategory : undefined,
-        city: selectedCity,
-      });
-      setEvents(response.data.events);
+      const category = selectedCategory === 'Все' ? undefined : selectedCategory;
+      const fetchedEvents = await api.getEvents(category, selectedCity);
+      setEvents(fetchedEvents);
     } catch (error) {
       console.error('Error fetching events:', error);
-      setError('Не удалось загрузить мероприятия. Пожалуйста, попробуйте позже.');
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleEventDetailsClick = (id: string) => {
+  const handleEventDetailsClick = (id: number) => {
     navigate(`/event/${id}`);
   };
 
@@ -130,21 +109,13 @@ const HomePage: React.FC = () => {
             )}
           </div>
         </div>
-        {loading ? (
-          <p>Загрузка мероприятий...</p>
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : filteredEvents.length === 0 ? (
-          <p>Мероприятия не найдены</p>
-        ) : (
-          filteredEvents.map(event => (
-            <EventCard 
-              key={event.id} 
-              {...event} 
-              onDetailsClick={handleEventDetailsClick}
-            />
-          ))
-        )}
+        {filteredEvents.map(event => (
+          <EventCard 
+            key={event.id} 
+            {...event} 
+            onDetailsClick={() => handleEventDetailsClick(event.id)}
+          />
+        ))}
       </div>
 
       <BottomNavigation />
