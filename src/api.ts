@@ -46,9 +46,12 @@ export const api = {
 
   sendDataToTelegram(data: any) {
     if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.sendData(JSON.stringify(data));
+      const webAppData = window.Telegram.WebApp.initDataUnsafe;
+      const chatId = webAppData.user.id;
+      return axios.post(`${API_URL}/telegram/webhook`, { ...data, chatId });
     } else {
       console.error('Telegram WebApp is not available');
+      return Promise.reject('Telegram WebApp is not available');
     }
   }
 };
