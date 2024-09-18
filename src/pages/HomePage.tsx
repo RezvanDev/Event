@@ -26,10 +26,9 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     fetchEvents();
     if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.BackButton.show();
-      window.Telegram.WebApp.BackButton.onClick(() => {
-        window.Telegram.WebApp.close();
-      });
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.MainButton.hide();
+      window.Telegram.WebApp.BackButton.hide();
     }
   }, [selectedCategory, selectedCity]);
 
@@ -37,35 +36,33 @@ const HomePage: React.FC = () => {
     try {
       console.log('Fetching events...');
       const category = selectedCategory === 'Все' ? undefined : selectedCategory;
-      console.log('Category:', category);
-      console.log('City:', selectedCity);
+      console.log('Category:', category, 'City:', selectedCity);
       const fetchedEvents = await api.getEvents(category, selectedCity);
       console.log('Fetched events:', fetchedEvents);
-      setEvents(Array.isArray(fetchedEvents) ? fetchedEvents : []);
+      setEvents(fetchedEvents);
     } catch (error) {
       console.error('Error fetching events:', error);
-      setEvents([]);
     }
   };
 
-  const handleEventDetailsClick = (id: string) => {
+  const handleEventDetailsClick = (id: number) => {
     navigate(`/event/${id}`);
   };
 
-  const filteredEvents = Array.isArray(events) ? events.filter(event =>
+  const filteredEvents = events.filter(event =>
     event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     event.description.toLowerCase().includes(searchQuery.toLowerCase())
-  ) : [];
+  );
 
   return (
-    <div className="bg-gray-100 min-h-screen pb-16">
+    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen pb-16">
       {/* Search and Categories */}
-      <div className="bg-white p-4 space-y-4">
+      <div className="bg-white dark:bg-gray-800 p-4 space-y-4">
         <div className="relative">
           <input
             type="text"
             placeholder="Поиск"
-            className="w-full bg-gray-100 rounded-md py-2 pl-10 pr-4"
+            className="w-full bg-gray-100 dark:bg-gray-700 rounded-md py-2 pl-10 pr-4 text-gray-800 dark:text-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -78,13 +75,13 @@ const HomePage: React.FC = () => {
                 className={`w-[60px] h-[60px] rounded-full flex items-center justify-center ${
                   category.name === selectedCategory
                     ? 'bg-blue-500 text-white'
-                    : 'bg-white text-gray-600 border border-gray-300'
+                    : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-200 border border-gray-300 dark:border-gray-600'
                 }`}
                 onClick={() => setSelectedCategory(category.name)}
               >
                 <category.Icon size={24} />
               </button>
-              <span className="text-xs mt-1 font-medium text-gray-700">{category.name}</span>
+              <span className="text-xs mt-1 font-medium text-gray-700 dark:text-gray-300">{category.name}</span>
             </div>
           ))}
         </div>
@@ -93,7 +90,7 @@ const HomePage: React.FC = () => {
       {/* Events List */}
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Мероприятия</h2>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Мероприятия</h2>
           <div className="relative">
             <button 
               className="flex items-center text-blue-500 font-medium"
@@ -103,11 +100,11 @@ const HomePage: React.FC = () => {
               <FiChevronDown className="ml-1" />
             </button>
             {isCityDropdownOpen && (
-              <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+              <div className="absolute right-0 mt-2 py-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-xl z-20">
                 {cities.map((city) => (
                   <button
                     key={city}
-                    className="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white w-full text-left"
+                    className="block px-4 py-2 text-sm capitalize text-gray-700 dark:text-gray-200 hover:bg-blue-500 hover:text-white w-full text-left"
                     onClick={() => {
                       setSelectedCity(city);
                       setIsCityDropdownOpen(false);
@@ -123,8 +120,15 @@ const HomePage: React.FC = () => {
         {filteredEvents.map(event => (
           <EventCard 
             key={event.id}
-            {...event}
-            id={event.id.toString()} // Преобразуем number в string
+            id={event.id.toString()}
+            title={event.title}
+            description={event.description}
+            date={event.date}
+            rating={event.rating}
+            imageUrl={event.imageUrl}
+            isMeetBookingChoice={event.isMeetBookingChoice}
+            category={event.category}
+            city={event.city}
             onDetailsClick={handleEventDetailsClick}
           />
         ))}

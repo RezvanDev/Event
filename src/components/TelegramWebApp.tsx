@@ -17,6 +17,15 @@ const TelegramWebApp: React.FC<TelegramWebAppProps> = ({ children }) => {
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
+
+    // Настройка темы
+    if (tg.colorScheme === 'dark') {
+      document.body.classList.add('dark');
+    }
+
+    return () => {
+      document.body.classList.remove('dark');
+    };
   }, []);
 
   return <>{children}</>;

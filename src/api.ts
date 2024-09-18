@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = ' https://8120-202-79-184-241.ngrok-free.app'; // Adjust this to match your NestJS server URL
+const API_URL = 'https://8120-202-79-184-241.ngrok-free.app';
 
 export interface Event {
   id: number;

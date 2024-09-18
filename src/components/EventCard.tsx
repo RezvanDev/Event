@@ -1,10 +1,17 @@
 import React from 'react';
 import { FiStar, FiClock, FiAward } from 'react-icons/fi';
-import { Event } from '../api'; // Импортируем интерфейс Event из api.ts
 
-interface EventCardProps extends Omit<Event, 'id'> {
-  id: string; // Оставляем id как строку для EventCard
-  onDetailsClick?: (id: string) => void;
+interface EventCardProps {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  rating: number;
+  imageUrl: string;
+  isMeetBookingChoice: boolean;
+  category: string;
+  city: string;
+  onDetailsClick: (id: number) => void;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -20,12 +27,12 @@ const EventCard: React.FC<EventCardProps> = ({
 }) => {
   const handleDetailsClick = () => {
     if (onDetailsClick) {
-      onDetailsClick(id);
+      onDetailsClick(parseInt(id));
     }
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-md overflow-hidden mb-4 ${getCategoryStyle(category)}`}>
+    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-4 ${getCategoryStyle(category)}`}>
       <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${imageUrl})` }}>
         <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start bg-gradient-to-b from-black/50 to-transparent">
           <span className="flex items-center text-white bg-black/30 rounded px-2 py-1">
@@ -45,10 +52,10 @@ const EventCard: React.FC<EventCardProps> = ({
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-bold text-lg mb-1">{title}</h3>
-        <p className="text-gray-600 text-sm mb-3">{description}</p>
+        <h3 className="font-bold text-lg mb-1 text-gray-900 dark:text-white">{title}</h3>
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">{description}</p>
         <button
-          className="w-full bg-blue-500 text-white rounded-md py-2 font-medium"
+          className="w-full bg-blue-500 text-white rounded-md py-2 font-medium hover:bg-blue-600 transition-colors duration-200"
           onClick={handleDetailsClick}
         >
           Подробнее
