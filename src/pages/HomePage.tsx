@@ -37,7 +37,12 @@ const HomePage: React.FC = () => {
       console.log('Fetching events with params:', { category, city: selectedCity });
       const fetchedEvents = await api.getEvents(category, selectedCity);
       console.log('Fetched events:', fetchedEvents);
-      setEvents(fetchedEvents);
+      if (Array.isArray(fetchedEvents)) {
+        setEvents(fetchedEvents);
+      } else {
+        console.error('Unexpected response format:', fetchedEvents);
+        setError('Получен неверный формат данных от сервера');
+      }
     } catch (error) {
       console.error('Error fetching events:', error);
       setError('Не удалось загрузить мероприятия. Пожалуйста, попробуйте позже.');

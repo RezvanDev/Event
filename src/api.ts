@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://ea8c-202-79-184-241.ngrok-free.app';
+const API_URL = 'https://ea8c-202-79-184-241.ngrok-free.app/api';
 
 export interface Event {
   id: number;
@@ -24,30 +24,35 @@ export const api = {
       const params = new URLSearchParams();
       if (category) params.append('category', category);
       if (city) params.append('city', city);
-      const response = await axios.get(`${API_URL}/api/events`, { params });
+      // Убрал дублирование '/api' в URL
+      const response = await axios.get(`${API_URL}/events`, { params });
       return response.data;
     } catch (error) {
       console.error('Error fetching events:', error);
-      return [];
+      throw error; // Пробрасываем ошибку дальше для обработки в компоненте
     }
   },
 
   async getEvent(id: number): Promise<Event> {
-    const response = await axios.get(`${API_URL}/api/events/${id}`);
+    // Убрал дублирование '/api' в URL
+    const response = await axios.get(`${API_URL}/events/${id}`);
     return response.data;
   },
 
   async createEvent(eventData: Omit<Event, 'id'>): Promise<Event> {
-    const response = await axios.post(`${API_URL}/api/events`, eventData);
+    // Убрал дублирование '/api' в URL
+    const response = await axios.post(`${API_URL}/events`, eventData);
     return response.data;
   },
 
   async updateEvent(id: number, eventData: Partial<Event>): Promise<Event> {
-    const response = await axios.put(`${API_URL}/api/events/${id}`, eventData);
+    // Убрал дублирование '/api' в URL
+    const response = await axios.put(`${API_URL}/events/${id}`, eventData);
     return response.data;
   },
 
   async deleteEvent(id: number): Promise<void> {
-    await axios.delete(`${API_URL}/api/events/${id}`);
+    // Убрал дублирование '/api' в URL
+    await axios.delete(`${API_URL}/events/${id}`);
   }
 };
