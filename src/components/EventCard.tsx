@@ -35,7 +35,7 @@ const EventCard: React.FC<EventCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+    <div className={`bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 ${getCategoryStyle(category)}`}>
       <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${imageUrl})` }}>
         <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start">
           <span className="flex items-center text-white bg-black/50 rounded-full px-3 py-1 text-sm">
@@ -54,13 +54,13 @@ const EventCard: React.FC<EventCardProps> = ({
         </div>
       </div>
       <div className="p-4">
-        <p className="text-gray-600 text-sm mb-2">{shortDescription}</p>
-        <div className="flex justify-between items-center mb-3">
-          <span className="flex items-center text-gray-500 text-sm">
+        <p className="text-gray-600 text-sm mb-2 line-clamp-2">{shortDescription}</p>
+        <div className="flex justify-between items-center mb-3 text-sm text-gray-500">
+          <span className="flex items-center">
             <FiClock className="w-4 h-4 mr-1" />
             {date}
           </span>
-          <span className="flex items-center text-gray-500 text-sm">
+          <span className="flex items-center">
             <FiMapPin className="w-4 h-4 mr-1" />
             {city}
           </span>
@@ -78,5 +78,20 @@ const EventCard: React.FC<EventCardProps> = ({
     </div>
   );
 }
+
+const getCategoryStyle = (category: string) => {
+  switch (category.toLowerCase()) {
+    case 'детям':
+      return 'border-t-4 border-green-500';
+    case 'концерты':
+      return 'border-t-4 border-purple-500';
+    case 'стендап':
+      return 'border-t-4 border-yellow-500';
+    case 'выставки':
+      return 'border-t-4 border-red-500';
+    default:
+      return '';
+  }
+};
 
 export default EventCard;
