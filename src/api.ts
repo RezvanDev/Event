@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://ea8c-202-79-184-241.ngrok-free.app';
+const API_URL = 'https://ea8c-202-79-184-241.ngrok-free.app/api';
 
 export interface Event {
   id: number;
