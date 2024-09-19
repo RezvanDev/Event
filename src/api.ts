@@ -24,35 +24,16 @@ export const api = {
       const params = new URLSearchParams();
       if (category) params.append('category', category);
       if (city) params.append('city', city);
-      // Убрал дублирование '/api' в URL
       const response = await axios.get(`${API_URL}/events`, { params });
       return response.data;
     } catch (error) {
       console.error('Error fetching events:', error);
-      throw error; // Пробрасываем ошибку дальше для обработки в компоненте
+      throw error;
     }
   },
 
   async getEvent(id: number): Promise<Event> {
-    // Убрал дублирование '/api' в URL
     const response = await axios.get(`${API_URL}/events/${id}`);
     return response.data;
-  },
-
-  async createEvent(eventData: Omit<Event, 'id'>): Promise<Event> {
-    // Убрал дублирование '/api' в URL
-    const response = await axios.post(`${API_URL}/events`, eventData);
-    return response.data;
-  },
-
-  async updateEvent(id: number, eventData: Partial<Event>): Promise<Event> {
-    // Убрал дублирование '/api' в URL
-    const response = await axios.put(`${API_URL}/events/${id}`, eventData);
-    return response.data;
-  },
-
-  async deleteEvent(id: number): Promise<void> {
-    // Убрал дублирование '/api' в URL
-    await axios.delete(`${API_URL}/events/${id}`);
   }
 };
