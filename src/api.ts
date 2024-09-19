@@ -24,8 +24,8 @@ export const api = {
       const params = new URLSearchParams();
       if (category) params.append('category', category);
       if (city) params.append('city', city);
-      const response = await axios.get(`${API_URL}/api/events`, { params });
-      return Array.isArray(response.data) ? response.data : [];
+      const response = await axios.get(`${API_URL}/events`, { params });
+      return response.data;
     } catch (error) {
       console.error('Error fetching events:', error);
       return [];

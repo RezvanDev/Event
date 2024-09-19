@@ -22,6 +22,8 @@ const HomePage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -29,12 +31,16 @@ const HomePage: React.FC = () => {
 
   const fetchEvents = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
       const category = selectedCategory === 'Все' ? undefined : selectedCategory;
       const fetchedEvents = await api.getEvents(category, selectedCity);
-      setEvents(Array.isArray(fetchedEvents) ? fetchedEvents : []);
+      setEvents(fetchedEvents);
     } catch (error) {
       console.error('Error fetching events:', error);
-      setEvents([]);
+      setError('Не удалось загрузить мероприятия. Пожалуйста, попробуйте позже.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,47 +90,58 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Events List */}
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Мероприятия</h2>
-          <div className="relative">
-            <button 
-              className="flex items-center text-blue-500 font-medium"
-              onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+<div className="p-4">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-2xl font-bold">Мероприятия</h2>
+    <div className="relative">
+      <button
+        className="flex items-center text-blue-500 font-medium"
+        onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+      >
+        в {selectedCity}
+        <FiChevronDown className="ml-1" />
+      </button>
+      {isCityDropdownOpen && (
+        <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+          {cities.map((city) => (
+            <button
+              key={city}
+              className="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white w-full text-left"
+              onClick={() => {
+                setSelectedCity(city);
+                setIsCityDropdownOpen(false);
+              }}
             >
-              в {selectedCity}
-              <FiChevronDown className="ml-1" />
+              {city}
             </button>
-            {isCityDropdownOpen && (
-              <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
-                {cities.map((city) => (
-                  <button
-                    key={city}
-                    className="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white w-full text-left"
-                    onClick={() => {
-                      setSelectedCity(city);
-                      setIsCityDropdownOpen(false);
-                    }}
-                  >
-                    {city}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          ))}
         </div>
-        {filteredEvents.length > 0 ? (
-        filteredEvents.map(event => (
-          <EventCard 
-            key={event.id} 
-            {...event} 
-            onDetailsClick={() => handleEventDetailsClick(event.id)}
-          />
-        ))
-      ) : (
-        <p>Нет доступных мероприятий</p>
       )}
     </div>
+  </div>
+  
+  {isLoading ? (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+    </div>
+  ) : error ? (
+    <div className="text-red-500 text-center py-4">{error}</div>
+  ) : filteredEvents.length > 0 ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {filteredEvents.map(event => (
+        <EventCard
+          key={event.id}
+          {...event}
+          onDetailsClick={() => handleEventDetailsClick(event.id)}
+        />
+      ))}
+    </div>
+  ) : (
+    <div className="text-center py-4 text-gray-500">
+      Нет доступных мероприятий для выбранных критериев
+    </div>
+  )}
+</div>
 
       <BottomNavigation />
     </div>
