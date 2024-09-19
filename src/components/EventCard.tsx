@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiStar, FiClock, FiAward, FiMapPin, FiTag } from 'react-icons/fi';
+import { FiStar, FiClock, FiAward } from 'react-icons/fi';
 
 interface EventCardProps {
   id: number;
@@ -25,7 +25,6 @@ const EventCard: React.FC<EventCardProps> = ({
   isMeetBookingChoice,
   category,
   onDetailsClick,
-  city,
   price
 }) => {
   const handleDetailsClick = () => {
@@ -35,50 +34,53 @@ const EventCard: React.FC<EventCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105">
+    <div className={`bg-white rounded-lg shadow-md overflow-hidden mb-4 ${getCategoryStyle(category)}`}>
       <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${imageUrl})` }}>
-        <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start bg-gradient-to-b from-black/70 to-transparent">
-          <span className="flex items-center text-white bg-black/50 rounded-full px-3 py-1">
-            <FiStar className="w-4 h-4 mr-1 text-yellow-400" />
+        <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start bg-gradient-to-b from-black/50 to-transparent">
+          <span className="flex items-center text-white bg-black/30 rounded px-2 py-1">
+            <FiStar className="w-4 h-4 mr-1" />
             <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
           </span>
-          <span className="flex items-center text-white bg-black/50 rounded-full px-3 py-1">
-            <FiTag className="w-4 h-4 mr-1" />
-            <span className="text-sm">{category}</span>
+          <span className="flex items-center text-white bg-black/30 rounded px-2 py-1">
+            <FiClock className="w-4 h-4 mr-1" />
+            <span className="text-sm">{date}</span>
           </span>
         </div>
         {isMeetBookingChoice && (
-          <span className="absolute top-2 right-2 flex items-center bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full">
+          <span className="absolute bottom-2 right-2 flex items-center bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full">
             <FiAward className="w-3 h-3 mr-1" />
             Выбор MeetBooking
           </span>
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-bold text-xl mb-2 text-gray-800">{title}</h3>
-        <p className="text-gray-600 text-sm mb-3">{shortDescription}</p>
-        <div className="flex justify-between items-center mb-3">
-          <span className="flex items-center text-gray-500 text-sm">
-            <FiClock className="w-4 h-4 mr-1" />
-            {date}
-          </span>
-          <span className="flex items-center text-gray-500 text-sm">
-            <FiMapPin className="w-4 h-4 mr-1" />
-            {city}
-          </span>
-        </div>
-        <div className="flex justify-between items-center mb-4">
-          <p className="text-blue-600 font-bold text-lg">{price} ₽</p>
-          <button
-            className="bg-blue-500 text-white rounded-full px-4 py-2 font-medium transition-colors duration-300 hover:bg-blue-600"
-            onClick={handleDetailsClick}
-          >
-            Подробнее
-          </button>
-        </div>
+        <h3 className="font-bold text-lg mb-1">{title}</h3>
+        <p className="text-gray-600 text-sm mb-2">{shortDescription}</p>
+        <p className="text-blue-500 font-semibold mb-3">{price} ₽</p>
+        <button
+          className="w-full bg-blue-500 text-white rounded-md py-2 font-medium"
+          onClick={handleDetailsClick}
+        >
+          Подробнее
+        </button>
       </div>
     </div>
   );
 }
+
+const getCategoryStyle = (category: string) => {
+  switch (category.toLowerCase()) {
+    case 'детям':
+      return 'border-l-4 border-green-500';
+    case 'концерты':
+      return 'border-l-4 border-purple-500';
+    case 'стендап':
+      return 'border-l-4 border-yellow-500';
+    case 'выставки':
+      return 'border-l-4 border-red-500';
+    default:
+      return '';
+  }
+};
 
 export default EventCard;
