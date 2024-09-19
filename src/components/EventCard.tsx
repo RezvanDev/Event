@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiStar, FiClock, FiAward } from 'react-icons/fi';
+import { FiStar, FiClock } from 'react-icons/fi';
 
 interface EventCardProps {
   id: number;
@@ -8,11 +8,8 @@ interface EventCardProps {
   date: string;
   rating: number;
   imageUrl: string;
-  isMeetBookingChoice: boolean;
-  category: string;
-  onDetailsClick?: (id: number) => void;
-  city: string;
   price: number;
+  onDetailsClick?: (id: number) => void;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -22,10 +19,8 @@ const EventCard: React.FC<EventCardProps> = ({
   date,
   rating,
   imageUrl,
-  isMeetBookingChoice,
-  category,
-  onDetailsClick,
-  price
+  price,
+  onDetailsClick
 }) => {
   const handleDetailsClick = () => {
     if (onDetailsClick) {
@@ -34,31 +29,29 @@ const EventCard: React.FC<EventCardProps> = ({
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-md overflow-hidden mb-4 ${getCategoryStyle(category)}`}>
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${imageUrl})` }}>
-        <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start">
-          <span className="flex items-center text-white rounded px-2 py-1">
-            <span className="text-sm font-semibold mr-2">{price} ₽</span>
-            <FiStar className="w-4 h-4 mr-1" />
-            <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
+        <div className="absolute top-2 left-2 right-2 flex justify-between items-center">
+          <span className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm font-semibold">
+            от {price} ₽
           </span>
-          <span className="flex items-center text-white rounded px-2 py-1">
-            <FiClock className="w-4 h-4 mr-1" />
-            <span className="text-sm">{date}</span>
-          </span>
+          <div className="flex items-center space-x-2">
+            <span className="bg-white rounded-full px-3 py-1 flex items-center">
+              <FiStar className="w-4 h-4 text-yellow-400 mr-1" />
+              <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
+            </span>
+            <span className="bg-white rounded-full px-3 py-1 flex items-center">
+              <FiClock className="w-4 h-4 mr-1" />
+              <span className="text-sm">{date}</span>
+            </span>
+          </div>
         </div>
-        {isMeetBookingChoice && (
-          <span className="absolute bottom-2 right-2 flex items-center bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full">
-            <FiAward className="w-3 h-3 mr-1" />
-            Выбор MeetBooking
-          </span>
-        )}
       </div>
       <div className="p-4">
-        <h3 className="font-bold text-lg mb-1">{title}</h3>
-        <p className="text-gray-600 text-sm mb-2">{shortDescription}</p>
+        <h3 className="font-bold text-xl mb-2">{title}</h3>
+        <p className="text-gray-600 text-sm mb-4">{shortDescription}</p>
         <button
-          className="w-full bg-blue-500 text-white rounded-md py-2 font-medium"
+          className="w-full bg-blue-500 text-white rounded-lg py-2 font-medium text-lg"
           onClick={handleDetailsClick}
         >
           Подробнее
@@ -67,20 +60,5 @@ const EventCard: React.FC<EventCardProps> = ({
     </div>
   );
 }
-
-const getCategoryStyle = (category: string) => {
-  switch (category.toLowerCase()) {
-    case 'детям':
-      return 'border-l-4 border-green-500';
-    case 'концерты':
-      return 'border-l-4 border-purple-500';
-    case 'стендап':
-      return 'border-l-4 border-yellow-500';
-    case 'выставки':
-      return 'border-l-4 border-red-500';
-    default:
-      return '';
-  }
-};
 
 export default EventCard;
