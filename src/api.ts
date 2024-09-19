@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://ea8c-202-79-184-241.ngrok-free.app/api';
+const API_URL = 'https://ea8c-202-79-184-241.ngrok-free.app';
 
 export interface Event {
   id: number;
@@ -24,7 +24,7 @@ export const api = {
       const params = new URLSearchParams();
       if (category) params.append('category', category);
       if (city) params.append('city', city);
-      const response = await axios.get(`${API_URL}/events`, { params });
+      const response = await axios.get(`${API_URL}/api/events`, { params });
       return response.data;
     } catch (error) {
       console.error('Error fetching events:', error);

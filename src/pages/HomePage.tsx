@@ -34,7 +34,9 @@ const HomePage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       const category = selectedCategory === 'Все' ? undefined : selectedCategory;
+      console.log('Fetching events with params:', { category, city: selectedCity });
       const fetchedEvents = await api.getEvents(category, selectedCity);
+      console.log('Fetched events:', fetchedEvents);
       setEvents(fetchedEvents);
     } catch (error) {
       console.error('Error fetching events:', error);
