@@ -29,45 +29,54 @@ const EventDetailsPage: React.FC = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col">
+    <div className="bg-white min-h-screen flex flex-col">
       <div className="flex-grow overflow-y-auto pb-32">
-        <div className="relative h-64 bg-blue-500">
-          <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover" />
-          <button 
-            onClick={() => navigate(-1)} 
-            className="absolute top-4 left-4 bg-white p-2 rounded-full shadow-md"
-          >
-            <FiArrowLeft size={24} className="text-blue-500" />
-          </button>
-        </div>
-        
-        <div className="bg-white rounded-t-3xl -mt-6 p-6 shadow-lg">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h1 className="text-3xl font-bold mb-1">{event.title}</h1>
-              <p className="text-blue-500 flex items-center">
-                <FiMapPin className="mr-1" />
-                {event.city}
-              </p>
-            </div>
-            <div className="flex items-center bg-blue-100 px-3 py-1 rounded-full">
-              <FiStar className="w-5 h-5 text-blue-500 mr-1" />
-              <span className="font-bold text-lg">{event.rating.toFixed(1)}</span>
+        <div className="relative">
+          <div className="h-72 bg-gradient-to-b from-blue-400 to-blue-600 overflow-hidden">
+            <img 
+              src={event.imageUrl} 
+              alt={event.title} 
+              className="w-full h-full object-cover opacity-60 mix-blend-overlay"
+            />
+          </div>
+          <div className="absolute top-0 left-0 right-0 p-6">
+            <button 
+              onClick={() => navigate(-1)} 
+              className="bg-white/30 backdrop-blur-sm p-2 rounded-full shadow-lg"
+            >
+              <FiArrowLeft size={24} className="text-white" />
+            </button>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent">
+            <h1 className="text-4xl font-bold text-white mb-2 leading-tight">{event.title}</h1>
+            <div className="flex items-center text-white/90">
+              <FiMapPin className="mr-2" />
+              <span>{event.city}</span>
             </div>
           </div>
+        </div>
+        
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center bg-blue-100 px-3 py-1 rounded-full">
+              <FiStar className="w-5 h-5 text-blue-500 mr-1" />
+              <span className="font-bold text-lg text-blue-700">{event.rating.toFixed(1)}</span>
+            </div>
+            <div className="text-2xl font-bold text-blue-600">{event.price} ₽</div>
+          </div>
 
-          <div className="flex justify-between mb-6">
-            <div className="flex items-center">
-              <FiCalendar className="text-blue-500 mr-2" />
-              <span>{event.date}</span>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg p-3">
+              <FiCalendar className="text-blue-500 mb-1" size={20} />
+              <span className="text-sm text-center">{event.date}</span>
             </div>
-            <div className="flex items-center">
-              <FiTag className="text-blue-500 mr-2" />
-              <span>{event.category}</span>
+            <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg p-3">
+              <FiTag className="text-blue-500 mb-1" size={20} />
+              <span className="text-sm text-center">{event.category}</span>
             </div>
-            <div className="flex items-center">
-              <FiClock className="text-blue-500 mr-2" />
-              <span>{event.format}</span>
+            <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg p-3">
+              <FiClock className="text-blue-500 mb-1" size={20} />
+              <span className="text-sm text-center">{event.format}</span>
             </div>
           </div>
 
@@ -87,7 +96,7 @@ const EventDetailsPage: React.FC = () => {
 
       <div className="fixed bottom-16 left-0 right-0 p-4 bg-white shadow-up">
         <button className="w-full bg-blue-500 text-white py-4 rounded-xl font-semibold text-lg shadow-md hover:bg-blue-600 transition duration-300">
-          Забронировать за {event.price} ₽
+          Забронировать
         </button>
       </div>
 
