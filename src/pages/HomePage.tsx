@@ -31,20 +31,24 @@ const HomePage: React.FC = () => {
     try {
       const category = selectedCategory === 'Все' ? undefined : selectedCategory;
       const fetchedEvents = await api.getEvents(category, selectedCity);
-      setEvents(fetchedEvents);
+      setEvents(Array.isArray(fetchedEvents) ? fetchedEvents : []);
     } catch (error) {
       console.error('Error fetching events:', error);
+      setEvents([]);
     }
   };
+
+  const filteredEvents = Array.isArray(events) 
+    ? events.filter(event =>
+        event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.shortDescription.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   const handleEventDetailsClick = (id: number) => {
     navigate(`/event/${id}`);
   };
 
-  const filteredEvents = events.filter(event =>
-    event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    event.shortDescription.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <div className="bg-gray-100 min-h-screen pb-16">
@@ -109,14 +113,18 @@ const HomePage: React.FC = () => {
             )}
           </div>
         </div>
-        {filteredEvents.map(event => (
+        {filteredEvents.length > 0 ? (
+        filteredEvents.map(event => (
           <EventCard 
             key={event.id} 
             {...event} 
             onDetailsClick={() => handleEventDetailsClick(event.id)}
           />
-        ))}
-      </div>
+        ))
+      ) : (
+        <p>Нет доступных мероприятий</p>
+      )}
+    </div>
 
       <BottomNavigation />
     </div>

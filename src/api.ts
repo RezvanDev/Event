@@ -20,11 +20,16 @@ export interface Event {
 
 export const api = {
   async getEvents(category?: string, city?: string): Promise<Event[]> {
-    const params = new URLSearchParams();
-    if (category) params.append('category', category);
-    if (city) params.append('city', city);
-    const response = await axios.get(`${API_URL}/api/events`, { params });
-    return response.data;
+    try {
+      const params = new URLSearchParams();
+      if (category) params.append('category', category);
+      if (city) params.append('city', city);
+      const response = await axios.get(`${API_URL}/api/events`, { params });
+      return Array.isArray(response.data) ? response.data : [];
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      return [];
+    }
   },
 
   async getEvent(id: number): Promise<Event> {
