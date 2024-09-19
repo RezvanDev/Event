@@ -2,37 +2,39 @@ import React from 'react';
 import { FiStar, FiClock, FiAward } from 'react-icons/fi';
 
 interface EventCardProps {
-  id: string;
+  id: number;
   title: string;
-  description: string;
+  shortDescription: string;
   date: string;
   rating: number;
   imageUrl: string;
   isMeetBookingChoice: boolean;
   category: string;
+  onDetailsClick?: (id: number) => void;
   city: string;
-  onDetailsClick: (id: number) => void;
+  price: number;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
   id,
   title,
-  description,
+  shortDescription,
   date,
   rating,
   imageUrl,
   isMeetBookingChoice,
   category,
-  onDetailsClick
+  onDetailsClick,
+  price
 }) => {
   const handleDetailsClick = () => {
     if (onDetailsClick) {
-      onDetailsClick(parseInt(id));
+      onDetailsClick(id);
     }
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mb-4 ${getCategoryStyle(category)}`}>
+    <div className={`bg-white rounded-lg shadow-md overflow-hidden mb-4 ${getCategoryStyle(category)}`}>
       <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${imageUrl})` }}>
         <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start bg-gradient-to-b from-black/50 to-transparent">
           <span className="flex items-center text-white bg-black/30 rounded px-2 py-1">
@@ -52,10 +54,11 @@ const EventCard: React.FC<EventCardProps> = ({
         )}
       </div>
       <div className="p-4">
-        <h3 className="font-bold text-lg mb-1 text-gray-900 dark:text-white">{title}</h3>
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">{description}</p>
+        <h3 className="font-bold text-lg mb-1">{title}</h3>
+        <p className="text-gray-600 text-sm mb-2">{shortDescription}</p>
+        <p className="text-blue-500 font-semibold mb-3">{price} ₽</p>
         <button
-          className="w-full bg-blue-500 text-white rounded-md py-2 font-medium hover:bg-blue-600 transition-colors duration-200"
+          className="w-full bg-blue-500 text-white rounded-md py-2 font-medium"
           onClick={handleDetailsClick}
         >
           Подробнее

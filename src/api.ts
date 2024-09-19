@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-const API_URL = 'https://d69c-202-79-184-241.ngrok-free.app/api';
+const API_URL = 'https://ea8c-202-79-184-241.ngrok-free.app';
 
 export interface Event {
   id: number;
   title: string;
   description: string;
+  shortDescription: string;
   date: string;
   rating: number;
   imageUrl: string;
@@ -13,56 +14,35 @@ export interface Event {
   category: string;
   city: string;
   price: number;
-  address: string;
+  format: string;
+  address?: string;
 }
 
 export const api = {
   async getEvents(category?: string, city?: string): Promise<Event[]> {
-    try {
-      const params = new URLSearchParams();
-      if (category) params.append('category', category);
-      if (city) params.append('city', city);
-      const response = await axios.get(`${API_URL}/events`, { params });
-      console.log('Raw API response:', response);
-      if (Array.isArray(response.data)) {
-        return response.data;
-      } else {
-        console.error('Unexpected API response format:', response.data);
-        return [];
-      }
-    } catch (error) {
-      console.error('Error in getEvents:', error);
-      return [];
-    }
+    const params = new URLSearchParams();
+    if (category) params.append('category', category);
+    if (city) params.append('city', city);
+    const response = await axios.get(`${API_URL}/api/events`, { params });
+    return response.data;
   },
 
   async getEvent(id: number): Promise<Event> {
-    const response = await axios.get(`${API_URL}/events/${id}`);
+    const response = await axios.get(`${API_URL}/api/events/${id}`);
     return response.data;
   },
 
   async createEvent(eventData: Omit<Event, 'id'>): Promise<Event> {
-    const response = await axios.post(`${API_URL}/events`, eventData);
+    const response = await axios.post(`${API_URL}/api/events`, eventData);
     return response.data;
   },
 
   async updateEvent(id: number, eventData: Partial<Event>): Promise<Event> {
-    const response = await axios.put(`${API_URL}/events/${id}`, eventData);
+    const response = await axios.put(`${API_URL}/api/events/${id}`, eventData);
     return response.data;
   },
 
   async deleteEvent(id: number): Promise<void> {
-    await axios.delete(`${API_URL}/events/${id}`);
-  },
-
-  sendDataToTelegram(data: any) {
-    if (window.Telegram && window.Telegram.WebApp) {
-      const webAppData = window.Telegram.WebApp.initDataUnsafe;
-      const chatId = webAppData.user.id;
-      return axios.post(`${API_URL}/telegram/webhook`, { ...data, chatId });
-    } else {
-      console.error('Telegram WebApp is not available');
-      return Promise.reject('Telegram WebApp is not available');
-    }
+    await axios.delete(`${API_URL}/api/events/${id}`);
   }
 };
