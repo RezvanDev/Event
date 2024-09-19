@@ -62,15 +62,16 @@ const HomePage: React.FC = () => {
     navigate(`/event/${id}`);
   };
 
+
   return (
     <div className="bg-gray-100 min-h-screen pb-16">
-      {/* Поиск и категории */}
-      <div className="bg-white p-4 shadow-md">
-        <div className="relative mb-4">
+      {/* Search and Categories */}
+      <div className="bg-white p-4 space-y-4">
+        <div className="relative">
           <input
             type="text"
             placeholder="Поиск"
-            className="w-full bg-gray-100 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full bg-gray-100 rounded-md py-2 pl-10 pr-4"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -78,75 +79,76 @@ const HomePage: React.FC = () => {
         </div>
         <div className="flex space-x-4 overflow-x-auto pb-2">
           {categories.map((category) => (
-            <button
-              key={category.name}
-              className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
-                category.name === selectedCategory
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-              onClick={() => setSelectedCategory(category.name)}
-            >
-              <category.Icon size={24} className="mb-1" />
-              <span className="text-xs font-medium">{category.name}</span>
-            </button>
+            <div key={category.name} className="flex flex-col items-center">
+              <button
+                className={`w-[60px] h-[60px] rounded-full flex items-center justify-center ${
+                  category.name === selectedCategory
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-white text-gray-600 border border-gray-300'
+                }`}
+                onClick={() => setSelectedCategory(category.name)}
+              >
+                <category.Icon size={24} />
+              </button>
+              <span className="text-xs mt-1 font-medium text-gray-700">{category.name}</span>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Список мероприятий */}
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Мероприятия</h2>
-          <div className="relative">
+      {/* Events List */}
+<div className="p-4">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-2xl font-bold">Мероприятия</h2>
+    <div className="relative">
+      <button
+        className="flex items-center text-blue-500 font-medium"
+        onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+      >
+        в {selectedCity}
+        <FiChevronDown className="ml-1" />
+      </button>
+      {isCityDropdownOpen && (
+        <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+          {cities.map((city) => (
             <button
-              className="flex items-center text-blue-500 font-medium bg-white rounded-full px-4 py-2 shadow-md"
-              onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+              key={city}
+              className="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white w-full text-left"
+              onClick={() => {
+                setSelectedCity(city);
+                setIsCityDropdownOpen(false);
+              }}
             >
-              {selectedCity}
-              <FiChevronDown className="ml-2" />
+              {city}
             </button>
-            {isCityDropdownOpen && (
-              <div className="absolute right-0 mt-2 py-2 w-48 bg-white rounded-lg shadow-xl z-20">
-                {cities.map((city) => (
-                  <button
-                    key={city}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white w-full text-left"
-                    onClick={() => {
-                      setSelectedCity(city);
-                      setIsCityDropdownOpen(false);
-                    }}
-                  >
-                    {city}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          ))}
         </div>
-        
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-          </div>
-        ) : error ? (
-          <div className="text-red-500 text-center py-4 bg-white rounded-lg shadow-md">{error}</div>
-        ) : filteredEvents.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.map(event => (
-              <EventCard
-                key={event.id}
-                {...event}
-                onDetailsClick={() => handleEventDetailsClick(event.id)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-4 text-gray-500 bg-white rounded-lg shadow-md">
-            Нет доступных мероприятий для выбранных критериев
-          </div>
-        )}
-      </div>
+      )}
+    </div>
+  </div>
+  
+  {isLoading ? (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+    </div>
+  ) : error ? (
+    <div className="text-red-500 text-center py-4">{error}</div>
+  ) : filteredEvents.length > 0 ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {filteredEvents.map(event => (
+        <EventCard
+          key={event.id}
+          {...event}
+          onDetailsClick={() => handleEventDetailsClick(event.id)}
+        />
+      ))}
+    </div>
+  ) : (
+    <div className="text-center py-4 text-gray-500">
+      Нет доступных мероприятий для выбранных критериев
+    </div>
+  )}
+</div>
 
       <BottomNavigation />
     </div>
