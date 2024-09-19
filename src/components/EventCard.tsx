@@ -36,12 +36,13 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <div className={`bg-white rounded-lg shadow-md overflow-hidden mb-4 ${getCategoryStyle(category)}`}>
       <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${imageUrl})` }}>
-        <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start bg-gradient-to-b from-black/50 to-transparent">
-          <span className="flex items-center text-white bg-black/30 rounded px-2 py-1">
+        <div className="absolute top-0 left-0 right-0 p-2 flex justify-between items-start">
+          <span className="flex items-center text-white rounded px-2 py-1">
+            <span className="text-sm font-semibold mr-2">{price} ₽</span>
             <FiStar className="w-4 h-4 mr-1" />
             <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
           </span>
-          <span className="flex items-center text-white bg-black/30 rounded px-2 py-1">
+          <span className="flex items-center text-white rounded px-2 py-1">
             <FiClock className="w-4 h-4 mr-1" />
             <span className="text-sm">{date}</span>
           </span>
@@ -56,7 +57,6 @@ const EventCard: React.FC<EventCardProps> = ({
       <div className="p-4">
         <h3 className="font-bold text-lg mb-1">{title}</h3>
         <p className="text-gray-600 text-sm mb-2">{shortDescription}</p>
-        <p className="text-blue-500 font-semibold mb-3">{price} ₽</p>
         <button
           className="w-full bg-blue-500 text-white rounded-md py-2 font-medium"
           onClick={handleDetailsClick}
