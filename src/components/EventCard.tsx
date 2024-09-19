@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiStar, FiClock } from 'react-icons/fi';
+import { FiStar, FiClock, FiAward } from 'react-icons/fi';
 
 interface EventCardProps {
   id: number;
@@ -9,6 +9,7 @@ interface EventCardProps {
   rating: number;
   imageUrl: string;
   price: number;
+  isMeetBookingChoice: boolean;
   onDetailsClick?: (id: number) => void;
 }
 
@@ -20,6 +21,7 @@ const EventCard: React.FC<EventCardProps> = ({
   rating,
   imageUrl,
   price,
+  isMeetBookingChoice,
   onDetailsClick
 }) => {
   const handleDetailsClick = () => {
@@ -31,21 +33,25 @@ const EventCard: React.FC<EventCardProps> = ({
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="h-48 bg-cover bg-center relative" style={{ backgroundImage: `url(${imageUrl})` }}>
-        <div className="absolute top-2 left-2 right-2 flex justify-between items-center">
+        <div className="absolute top-2 left-2 right-2 flex items-center space-x-2">
           <span className="bg-blue-500 text-white rounded-full px-3 py-1 text-sm font-semibold">
             от {price} ₽
           </span>
-          <div className="flex items-center space-x-2">
-            <span className="bg-white rounded-full px-3 py-1 flex items-center">
-              <FiStar className="w-4 h-4 text-yellow-400 mr-1" />
-              <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
-            </span>
-            <span className="bg-white rounded-full px-3 py-1 flex items-center">
-              <FiClock className="w-4 h-4 mr-1" />
-              <span className="text-sm">{date}</span>
-            </span>
-          </div>
+          <span className="bg-white rounded-full px-3 py-1 flex items-center">
+            <FiStar className="w-4 h-4 text-yellow-400 mr-1" />
+            <span className="text-sm font-semibold">{rating.toFixed(1)}</span>
+          </span>
+          <span className="bg-white rounded-full px-3 py-1 flex items-center">
+            <FiClock className="w-4 h-4 mr-1" />
+            <span className="text-sm">{date}</span>
+          </span>
         </div>
+        {isMeetBookingChoice && (
+          <span className="absolute bottom-2 right-2 flex items-center bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full">
+            <FiAward className="w-3 h-3 mr-1" />
+            Выбор MeetBooking
+          </span>
+        )}
       </div>
       <div className="p-4">
         <h3 className="font-bold text-xl mb-2">{title}</h3>
